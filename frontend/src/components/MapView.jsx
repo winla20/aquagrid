@@ -129,7 +129,7 @@ export default function MapView() {
           'text-font': ['Open Sans Regular'],
         },
         paint: {
-          'text-color': 'rgba(0,212,170,0.38)',
+          'text-color': 'rgba(245,158,11,0.5)',
           'text-halo-color': 'rgba(6,9,15,0.9)',
           'text-halo-width': 2,
         },
