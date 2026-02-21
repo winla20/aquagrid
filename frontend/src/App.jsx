@@ -29,36 +29,10 @@ export default function App() {
 
   return (
     <div className="app">
-      <header className="header">
-        <div className="header-left">
-          <h1 className="logo">
-            <span className="logo-icon">&#9670;</span> AQUAGRID
-          </h1>
-          <span className="subtitle">NOVA WATER STRAIN MONITOR</span>
-        </div>
-        <div className="header-right">
-          <div className="status-badge">
-            <span className="status-dot" />
-            <span>SYSTEM ACTIVE</span>
-          </div>
-        </div>
-      </header>
-
       <main className="main">
         <MapView />
         <SimPanel />
       </main>
-
-      <footer className="footer">
-        <span className="footer-seg">AquaGrid v1.0 MVP</span>
-        <span className="footer-seg counties-list">
-          ARLINGTON&ensp;·&ensp;LOUDOUN&ensp;·&ensp;FAIRFAX&ensp;·&ensp;PRINCE
-          WILLIAM
-        </span>
-        <span className="footer-seg mono" id="coords">
-          —
-        </span>
-      </footer>
 
       {toast && (
         <div className="toast" key={toast}>

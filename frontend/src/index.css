@@ -415,7 +415,6 @@ body {
   font-weight: 700;
   line-height: 1;
   color: var(--c-text);
-  text-shadow: 0 0 30px var(--sc);
   animation: valueIn .6s cubic-bezier(.22,1,.36,1);
 }
 .strain-pct small {
