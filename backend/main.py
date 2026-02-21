@@ -93,7 +93,7 @@ def simulate(req: SimulationRequest):
         raise HTTPException(
             status_code=400,
             detail="Simulation only supported in Northern Virginia (MVP). "
-                   "Click within Arlington, Loudoun, Fairfax, or Prince William County.",
+                   "Click within Loudoun, Fairfax, or Prince William County.",
         )
 
     multiplier = COOLING_MULTIPLIERS[req.cooling_type.value]

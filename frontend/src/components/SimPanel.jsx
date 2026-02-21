@@ -81,10 +81,10 @@ export default function SimPanel() {
           <h2 className="idle-heading">Select Location</h2>
           <p className="idle-desc">
             Click anywhere on the map to propose a new data center site.
-            Simulation covers four Northern Virginia counties.
+            Simulation covers three Northern Virginia counties.
           </p>
           <div className="idle-tags">
-            {['Arlington', 'Loudoun', 'Fairfax', 'Prince William'].map((c) => (
+            {['Loudoun', 'Fairfax', 'Prince William'].map((c) => (
               <span key={c} className="tag">{c}</span>
             ))}
           </div>

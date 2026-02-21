@@ -2,7 +2,7 @@
 
 Web-based infrastructure simulation tool that evaluates the incremental water strain caused by proposed data center construction in Northern Virginia.
 
-**MVP Scope:** Arlington, Loudoun, Fairfax, and Prince William counties.
+**MVP Scope:** Loudoun, Fairfax, and Prince William counties.
 
 ---
 
@@ -72,7 +72,7 @@ Cooling types: `air_cooled` (0 GPD/MW), `hybrid` (2,500 GPD/MW), `evaporative` (
 
 ## Data Sources
 
-- **County boundaries:** Simplified GeoJSON (4 NoVA counties)
+- **County boundaries:** US Census TIGER/Line 2023 (exact boundaries for 3 NoVA counties). To refresh: `pip install pyshp` then `python backend/scripts/fetch_exact_counties.py`.
 - **Water withdrawal baselines:** Static county-level estimates (GPD)
 - **Data centers:** OpenStreetMap via Overpass Turbo (`nova_dc.geojson`)
 
