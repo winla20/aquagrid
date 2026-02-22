@@ -4,6 +4,16 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { useStore } from '../store';
 
 const STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
+
+function escapeHtml(s) {
+  if (s == null) return '';
+  const str = String(s);
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
 const CENTER = [-77.4, 38.95];
 const ZOOM = 9;
 
@@ -178,10 +188,24 @@ export default function MapView() {
         map.getCanvas().style.cursor = 'pointer';
         const p = e.features[0].properties;
         const name = p.name || 'Data Center';
-        const op = p.operator ? `<span class="dc-op">${p.operator}</span>` : '';
+        const sizerank = p.sizerank != null && p.sizerank !== '' ? String(p.sizerank) : null;
+        const mw = p.mw != null && p.mw !== '' ? (typeof p.mw === 'number' ? p.mw : parseFloat(p.mw)) : null;
+        const yearOp = p.year_operational != null && p.year_operational !== '' ? String(p.year_operational) : null;
+        const location = p.location != null && p.location !== '' ? String(p.location) : null;
+        const rows = [
+          ['NAME', name],
+          ...(mw != null && !Number.isNaN(mw) ? [['CAPACITY', `${mw} MW`]] : []),
+          ...(yearOp ? [['YEAR OPERATIONAL', yearOp]] : []),
+          ...(location ? [['LOCATION', location]] : []),
+          ...(p.operator ? [['DEVELOPER', p.operator]] : []),
+          ...(sizerank && sizerank.toLowerCase() !== 'unknown' ? [['SIZERANK', sizerank]] : []),
+        ];
+        const tableRows = rows
+          .map(([label, value]) => `<div class="dc-rt-row"><span class="dc-rt-label">${label}</span><span class="dc-rt-value">${escapeHtml(value)}</span></div>`)
+          .join('');
         popup
           .setLngLat(e.lngLat)
-          .setHTML(`<strong class="dc-name">${name}</strong>${op}`)
+          .setHTML(`<div class="dc-popup-box">${tableRows}</div>`)
           .addTo(map);
       });
 

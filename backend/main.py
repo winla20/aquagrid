@@ -33,6 +33,92 @@ with open(DATA_DIR / "counties.geojson", encoding="utf-8") as f:
 with open(ROOT_DIR / "nova_dc.geojson", encoding="utf-8") as f:
     datacenters_geojson = json.load(f)
 
+# Enrich data centers with FracTracker CSV (name, sizerank, mw) by location match
+_FRACTRACKER_CSV = DATA_DIR / "Data_Centers_Database - FracTracker Data Centers.csv"
+_MATCH_DEG = 0.04  # ~4 km
+
+def _load_fractracker_lookup():
+    if not _FRACTRACKER_CSV.exists():
+        return []
+    rows = _read_csv_rows_with_fallback(_FRACTRACKER_CSV)
+    out = []
+    for r in rows:
+        lat = _safe_float(r.get("lat"))
+        lng = _safe_float(r.get("long"))
+        if lat is None or lng is None:
+            continue
+        name = (r.get("facility_name") or "").strip().strip('"')
+        mw_raw = r.get("mw")
+        mw = _safe_float(mw_raw) if mw_raw and str(mw_raw).strip() else None
+        sizerank = (r.get("sizerank") or "").strip()
+        out.append({"lat": lat, "lng": lng, "name": name, "mw": mw, "sizerank": sizerank})
+    return out
+
+
+def _enrich_datacenters_with_fractracker():
+    ft_list = _load_fractracker_lookup()
+    if not ft_list:
+        return
+    for feat in datacenters_geojson.get("features", []):
+        geom = feat.get("geometry")
+        if not geom:
+            continue
+        try:
+            shp = shape(geom)
+            cent = shp.centroid
+            cy, cx = cent.y, cent.x
+        except Exception:
+            continue
+        best = None
+        best_d = float("inf")
+        for ft in ft_list:
+            d = (ft["lat"] - cy) ** 2 + (ft["lng"] - cx) ** 2
+            if d < best_d and d <= _MATCH_DEG ** 2:
+                best_d = d
+                best = ft
+        if best:
+            props = feat.setdefault("properties", {})
+            if best.get("name"):
+                props["name"] = best["name"]
+            if best.get("sizerank") is not None:
+                props["sizerank"] = best["sizerank"]
+            if best.get("mw") is not None:
+                props["mw"] = best["mw"]
+
+
+# Manual overrides: (name_match, display_name, mw, year_operational, location, developer)
+# name_match: exact string or substring that existing feature name must equal or contain
+_MANUAL_DC_OVERRIDES = [
+    ("Meta Henrico Data Center", "Henrico Data Center", 500, 2020, "Henrico, VA", "Meta"),
+    ("STACK NVA01A", "Stack Infrastructure NVA02 Campus", 420, None, "Prince William, VA", "Stack Infrastructure"),
+    ("QTS Richmond Data Center", "QTS Richmond 1", 240, None, "Richmond (City), VA", "QTS"),
+    ("Vantage VA2", "Ashburn Data Center Campus VA1", 206, 2021, "Loudoun, VA", "Vantage Data Centers"),
+    ("QTS Manassas DC1", "QTS Manassas DC1-DC6", 190, None, "VA", "QTS"),
+    ("QTS Manassas DC2", "QTS Manassas DC1-DC6", 190, None, "VA", "QTS"),
+    ("QTS Manassas DC5", "QTS Manassas DC1-DC6", 190, None, "VA", "QTS"),
+    ("Microsoft Data Center 1", "IAD 01-04", 180, None, "Loudoun, VA", "Microsoft"),
+    ("Aligned IAD02", "Aligned Ashburn IAD 02", 120, 2020, "Loudoun, VA", "Aligned"),
+]
+
+
+def _enrich_datacenters_manual():
+    for feat in datacenters_geojson.get("features", []):
+        props = feat.get("properties") or {}
+        existing_name = (props.get("name") or "").strip()
+        if not existing_name:
+            continue
+        for name_match, display_name, mw, year_op, location, developer in _MANUAL_DC_OVERRIDES:
+            if name_match in existing_name or existing_name == name_match:
+                props["name"] = display_name
+                props["mw"] = mw
+                props["operator"] = developer
+                if year_op is not None:
+                    props["year_operational"] = year_op
+                if location:
+                    props["location"] = location
+                break
+
+
 county_shapes = []
 for feature in counties_geojson["features"]:
     geom = shape(feature["geometry"])
@@ -95,6 +181,10 @@ def _read_csv_rows_with_fallback(path: Path):
             continue
     with open(path, encoding="latin-1", errors="replace") as f:
         return list(csv.DictReader(f))
+
+
+_enrich_datacenters_with_fractracker()
+_enrich_datacenters_manual()
 
 
 def _row_point(row):
