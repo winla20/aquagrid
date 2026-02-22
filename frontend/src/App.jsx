@@ -1,6 +1,7 @@
 import { useEffect, useCallback } from 'react';
 import MapView from './components/MapView';
 import SimPanel from './components/SimPanel';
+import Slideshow from './components/Slideshow';
 import { useStore } from './store';
 import { fetchCounties, fetchDataCenters, fetchUtilities } from './api';
 
@@ -10,6 +11,8 @@ export default function App() {
   const setUtilities = useStore((s) => s.setUtilities);
   const toast = useStore((s) => s.toast);
   const setToast = useStore((s) => s.setToast);
+  const showSlideshow = useStore((s) => s.showSlideshow);
+  const setShowSlideshow = useStore((s) => s.setShowSlideshow);
 
   useEffect(() => {
     Promise.all([
@@ -34,7 +37,18 @@ export default function App() {
       <main className="main">
         <MapView />
         <SimPanel />
+        <button
+          type="button"
+          className="about-trigger"
+          onClick={() => setShowSlideshow(true)}
+        >
+          About AquaGrid
+        </button>
       </main>
+
+      {showSlideshow && (
+        <Slideshow onClose={() => setShowSlideshow(false)} />
+      )}
 
       {toast && (
         <div className="toast" key={toast}>

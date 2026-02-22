@@ -9,6 +9,7 @@ export const useStore = create((set) => ({
   isLoading: false,
   error: null,
   toast: null,
+  showSlideshow: false,
 
   setCounties: (counties) => set({ counties }),
   setDataCenters: (dataCenters) => set({ dataCenters }),
@@ -23,6 +24,7 @@ export const useStore = create((set) => ({
   setIsLoading: (v) => set({ isLoading: v }),
   setError: (error) => set({ error, isLoading: false }),
   setToast: (toast) => set({ toast }),
+  setShowSlideshow: (show) => set({ showSlideshow: show }),
 
   reset: () =>
     set({ proposalLocation: null, simulationResult: null, error: null }),
