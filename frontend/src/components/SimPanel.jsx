@@ -3,7 +3,7 @@ import { useStore } from '../store';
 import { runSimulation } from '../api';
 
 const COOLING = [
-  { value: 'air_cooled', label: 'Air Cooled', rate: '0 GPD / MW' },
+  { value: 'air_cooled', label: 'Air Cooled', rate: '1,000 GPD / MW' },
   { value: 'hybrid', label: 'Hybrid', rate: '2,500 GPD / MW' },
   { value: 'evaporative', label: 'Evaporative', rate: '5,000 GPD / MW' },
 ];

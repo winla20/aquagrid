@@ -58,7 +58,7 @@ Frontend runs at `http://localhost:5173`. API requests are proxied to the backen
 }
 ```
 
-Cooling types: `air_cooled` (0 GPD/MW), `hybrid` (2,500 GPD/MW), `evaporative` (5,000 GPD/MW).
+Cooling types: `air_cooled` (1,000 GPD/MW), `hybrid` (2,500 GPD/MW), `evaporative` (5,000 GPD/MW). Reference: ~2 million L/day per 100 MW for evaporative.
 
 ---
 

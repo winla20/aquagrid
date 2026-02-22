@@ -17,7 +17,7 @@ app.add_middleware(
 )
 
 COOLING_MULTIPLIERS = {
-    "air_cooled": 0,
+    "air_cooled": 1000,
     "hybrid": 2500,
     "evaporative": 5000,
 }
