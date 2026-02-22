@@ -3,6 +3,7 @@ import { create } from 'zustand';
 export const useStore = create((set) => ({
   counties: null,
   dataCenters: null,
+  utilities: null,
   proposalLocation: null,
   simulationResult: null,
   isLoading: false,
@@ -11,6 +12,7 @@ export const useStore = create((set) => ({
 
   setCounties: (counties) => set({ counties }),
   setDataCenters: (dataCenters) => set({ dataCenters }),
+  setUtilities: (utilities) => set({ utilities }),
 
   setProposalLocation: (location) =>
     set({ proposalLocation: location, simulationResult: null, error: null }),

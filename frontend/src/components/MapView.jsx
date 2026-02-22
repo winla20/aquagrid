@@ -15,6 +15,7 @@ export default function MapView() {
 
   const counties = useStore((s) => s.counties);
   const dataCenters = useStore((s) => s.dataCenters);
+  const utilities = useStore((s) => s.utilities);
   const proposalLocation = useStore((s) => s.proposalLocation);
   const simulationResult = useStore((s) => s.simulationResult);
 
@@ -191,7 +192,33 @@ export default function MapView() {
         popup.remove();
       });
     }
-  }, [ready, counties, dataCenters]);
+
+    /* utility service areas */
+    if (utilities && !map.getSource('utilities')) {
+      map.addSource('utilities', { type: 'geojson', data: utilities });
+
+      map.addLayer({
+        id: 'utilities-fill',
+        type: 'fill',
+        source: 'utilities',
+        paint: {
+          'fill-color': '#60a5fa',
+          'fill-opacity': 0.05,
+        },
+      });
+
+      map.addLayer({
+        id: 'utilities-outline',
+        type: 'line',
+        source: 'utilities',
+        paint: {
+          'line-color': '#60a5fa',
+          'line-width': 1,
+          'line-opacity': 0.5,
+        },
+      });
+    }
+  }, [ready, counties, dataCenters, utilities]);
 
   /* ---- proposal marker ---- */
   useEffect(() => {

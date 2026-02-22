@@ -2,11 +2,12 @@ import { useEffect, useCallback } from 'react';
 import MapView from './components/MapView';
 import SimPanel from './components/SimPanel';
 import { useStore } from './store';
-import { fetchCounties, fetchDataCenters } from './api';
+import { fetchCounties, fetchDataCenters, fetchUtilities } from './api';
 
 export default function App() {
   const setCounties = useStore((s) => s.setCounties);
   const setDataCenters = useStore((s) => s.setDataCenters);
+  const setUtilities = useStore((s) => s.setUtilities);
   const toast = useStore((s) => s.toast);
   const setToast = useStore((s) => s.setToast);
 
@@ -14,10 +15,11 @@ export default function App() {
     Promise.all([
       fetchCounties().then(setCounties),
       fetchDataCenters().then(setDataCenters),
+      fetchUtilities().then(setUtilities),
     ]).catch(() =>
       setToast('Failed to connect to AquaGrid backend.')
     );
-  }, [setCounties, setDataCenters, setToast]);
+  }, [setCounties, setDataCenters, setUtilities, setToast]);
 
   useEffect(() => {
     if (!toast) return;
